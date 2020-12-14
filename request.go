@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 
 	files "github.com/ipfs/go-ipfs-files"
@@ -63,8 +64,9 @@ func (r *trailerReader) Close() error {
 }
 
 type Response struct {
-	Output io.ReadCloser
-	Error  *Error
+	Output        io.ReadCloser
+	ContentLength int64
+	Error         *Error
 }
 
 func (r *Response) Close() error {
@@ -133,6 +135,8 @@ func (r *Request) Send(c *http.Client) (*Response, error) {
 	}
 
 	contentType := resp.Header.Get("Content-Type")
+	cl := resp.Header.Get("Content-Length")
+	length, _ := strconv.Atoi(cl)
 	parts := strings.Split(contentType, ";")
 	contentType = parts[0]
 
@@ -171,7 +175,7 @@ func (r *Request) Send(c *http.Client) (*Response, error) {
 		io.Copy(ioutil.Discard, resp.Body)
 		resp.Body.Close()
 	}
-
+	nresp.ContentLength = int64(length)
 	return nresp, nil
 }
 
