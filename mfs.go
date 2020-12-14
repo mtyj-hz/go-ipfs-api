@@ -295,9 +295,10 @@ func (s *Shell) FilesRead(ctx context.Context, path string, options ...FilesOpt)
 }
 
 // FilesRm remove a file
-func (s *Shell) FilesRm(ctx context.Context, path string, force bool) error {
+func (s *Shell) FilesRm(ctx context.Context, path string, force bool, recursively bool) error {
 	return s.Request("files/rm", path).
 		Option("force", force).
+		Option("recursive", recursively).
 		Exec(ctx, nil)
 }
 
