@@ -135,7 +135,7 @@ func (r *Request) Send(c *http.Client) (*Response, error) {
 	}
 
 	contentType := resp.Header.Get("Content-Type")
-	cl := resp.Header.Get("Content-Length")
+	cl := resp.Header.Get("X-Content-Length")
 	length, _ := strconv.Atoi(cl)
 	parts := strings.Split(contentType, ";")
 	contentType = parts[0]
